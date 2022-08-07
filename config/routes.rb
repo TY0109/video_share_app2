@@ -3,6 +3,14 @@
 Rails.application.routes.draw do
   mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 
+  # organization関連==================================================
+  resources :organizations do
+    collection do
+      resources :folders
+    end
+  end
+  # =================================================================
+
   # admin関連=========================================================
   devise_for :admins, controllers: {
     sessions: 'admins/sessions'
