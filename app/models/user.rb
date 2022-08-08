@@ -8,6 +8,7 @@ class User < ApplicationRecord
     :confirmable
 
   has_many :articles, dependent: :destroy
+  has_many :comments
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, uniqueness: true, format: { with: VALID_EMAIL_REGEX }
