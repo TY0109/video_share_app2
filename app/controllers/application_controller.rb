@@ -7,15 +7,9 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     case resource
     when Viewer
-<<<<<<< HEAD
       viewers_path
     when SystemAdmin
-      system_path
-=======
-      viewers_dash_boards_path
-    when SystemAdmin
-      system_admins_dash_boards_path
->>>>>>> deccc2f... application_controller修正
+      system_admin_path(action: "show", id: 1)
     when User
       users_path
     end

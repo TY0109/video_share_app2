@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module SystemASSdmins
+module SystemAdmins
   class SessionsController < Devise::SessionsController
     layout 'system_admins'
     # before_action :configure_sign_in_params, only: [:create]

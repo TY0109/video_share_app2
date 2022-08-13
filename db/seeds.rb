@@ -30,11 +30,7 @@ user.skip_confirmation! # deviseの確認メールをスキップ
 user.save!
 
 system_admin = SystemAdmin.new(
-<<<<<<< HEAD
   email: 'test_system_admin@gmail.com',
-=======
-  email: 'test_,system_admin@gmail.com',
->>>>>>> b9e534a... seedの名前o-ba-
   name: '小松和貴',
   password: 'password'
 )
