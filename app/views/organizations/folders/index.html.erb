@@ -1,0 +1,14 @@
+<% provide(:title,  "動画一覧") %>
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <%@folders.each do |folder|%>
+        <%= link_to folder_path ,method: :get do %>
+          <i class="fa-solid fa-folder"></i>
+        <% end %>
+        <%=folder.name%>
+      <%end%>
+    </div>
+    <!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
