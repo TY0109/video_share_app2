@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
+ActiveRecord::Schema.define(version: 2022_08_13_024655) do
+=======
 ActiveRecord::Schema.define(version: 2021_09_23_110404) do
+>>>>>>> b9e534a... seedの名前o-ba-
 
   create_table "articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title", null: false
@@ -20,6 +24,16 @@ ActiveRecord::Schema.define(version: 2021_09_23_110404) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["viewer_id"], name: "index_articles_on_viewer_id"
+<<<<<<< HEAD
+  end
+
+  create_table "loginless_viewers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+=======
+>>>>>>> b9e534a... seedの名前o-ba-
   end
 
   create_table "system_admins", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -40,11 +54,14 @@ ActiveRecord::Schema.define(version: 2021_09_23_110404) do
     t.integer "failed_attempts", default: 0, null: false
     t.string "unlock_token"
     t.datetime "locked_at"
+<<<<<<< HEAD
     t.string "image"
     t.string "provider"
     t.string "uid"
     t.string "oauth_token"
     t.datetime "oauth_expires_at"
+=======
+>>>>>>> b9e534a... seedの名前o-ba-
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "name"
@@ -72,6 +89,7 @@ ActiveRecord::Schema.define(version: 2021_09_23_110404) do
     t.integer "failed_attempts", default: 0, null: false
     t.string "unlock_token"
     t.datetime "locked_at"
+<<<<<<< HEAD
     t.string "image"
     t.string "provider"
     t.string "uid"
@@ -81,6 +99,11 @@ ActiveRecord::Schema.define(version: 2021_09_23_110404) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "name"
     t.integer "role", default: 0, null: false
+=======
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "name"
+>>>>>>> b9e534a... seedの名前o-ba-
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -105,6 +128,7 @@ ActiveRecord::Schema.define(version: 2021_09_23_110404) do
     t.integer "failed_attempts", default: 0, null: false
     t.string "unlock_token"
     t.datetime "locked_at"
+<<<<<<< HEAD
     t.string "image"
     t.string "provider"
     t.string "uid"
@@ -113,6 +137,13 @@ ActiveRecord::Schema.define(version: 2021_09_23_110404) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "name"
+=======
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "name"
+    t.integer "age"
+    t.integer "gender"
+>>>>>>> b9e534a... seedの名前o-ba-
     t.index ["confirmation_token"], name: "index_viewers_on_confirmation_token", unique: true
     t.index ["email"], name: "index_viewers_on_email", unique: true
     t.index ["reset_password_token"], name: "index_viewers_on_reset_password_token", unique: true

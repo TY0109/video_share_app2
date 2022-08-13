@@ -74,7 +74,7 @@ module Viewers
     # protected
 
     def after_update_path_for(_resource)
-      viewers_profile_path
+      viewers_path
     end
 
     # If you have extra params to permit, append them to the sanitizer.

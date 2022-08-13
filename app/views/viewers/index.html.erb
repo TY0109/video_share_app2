@@ -1,0 +1,18 @@
+<% provide(:title,  "視聴者一覧") %>
+<%= link_to "視聴者新規作成画面へ", new_viewer_path, class: "btn btn-lg btn-block btn-outline-primary" %>
+<br>
+  <div class="card">
+    <div class="card-body table-responsive p-0">
+      <table class="table table-hover text-nowrap"> 
+        <tbody>
+          <% @viewers.each do |viewer| %>
+          <tr align="center">
+            <td><%= link_to viewer.name, viewer_path(viewer) %></td>
+            <td><%= viewer.email %></td>
+            <td><%= link_to "削除", viewer_path(viewer), method: :delete, data: { confirm: "#{viewer.name}の視聴者情報を削除します。本当によろしいですか？" }, class: "btn btn-md btn-danger" %></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div> 
