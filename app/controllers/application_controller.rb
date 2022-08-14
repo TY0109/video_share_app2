@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
     when Viewer
       viewers_path
     when SystemAdmin
-      system_admin_path(action: "show", id: 1)
+      system_admin_path(action: 'show', id: 1)
     when User
       users_path
     end

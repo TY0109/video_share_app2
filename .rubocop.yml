@@ -176,6 +176,7 @@ Metrics/BlockLength:
     - 'spec/**/*'                             # RspecのDSL
     - 'lib/tasks/helpers/test_data_helper.rb' # テストデータ定義
     - '*.gemspec'                             # Gem定義
+    - 'config/routes.rb'                      # Rails.application.routes.draw doの無効化
   ExcludedMethods:
     - 'configure'
     - 'class_eval'

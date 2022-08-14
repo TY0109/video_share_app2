@@ -7,5 +7,5 @@ class User < ApplicationRecord
     :recoverable, :rememberable, :validatable,
     :confirmable
 
-    enum role: { video_contributor: 0, owner: 1 }
+  enum role: { video_contributor: 0, owner: 1 }
 end

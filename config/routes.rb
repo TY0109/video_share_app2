@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     sessions:      'viewers/sessions',
     passwords:     'viewers/passwords',
     confirmations: 'viewers/confirmations',
-    # registrations: 'viewers/registrations'
+    registrations: 'viewers/registrations'
   }
 
   namespace :viewers do
