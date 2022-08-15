@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe Organization, type: :model do
-  let :organization do
-    build(:organization)
+RSpec.describe User, type: :model do
+  let :user do
+    build(:user)
   end
 
   describe 'バリデーションについて' do
     subject do
-      organization
+      user
     end
 
     it 'バリデーションが通ること' do
@@ -32,8 +34,8 @@ RSpec.describe Organization, type: :model do
 
       context 'uniqueでない場合' do
         before :each do
-          organization = create(:organization)
-          subject.email = organization.email
+          user = create(:user)
+          subject.email = user.email
         end
 
         it 'バリデーションに落ちること' do

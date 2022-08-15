@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :organization do
-    name { 'MyString' }
-    email { 'MyString' }
+    sequence(:name)  { |n| "組織#{n}" }
+    sequence(:email) { |n| "org#{n}@example.com" }
   end
 end

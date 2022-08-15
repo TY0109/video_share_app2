@@ -4,7 +4,7 @@
 <div class="card">
   <div class="card-body">
     <%= form_with model: @user, url: user_path, method: :patch, local: true do |f| %>
-      <%= render partial: "form", locals: { f: f, user: @user } %>
+      <%= render partial: "/shared/form", locals: { f: f, user: @user } %>
       
       <%= f.submit yield(:btn_text), class: "btn btn-md btn-block btn-success" %>
       <%= link_to "詳細画面へ", user_path(@user), class: "btn btn-md btn-block btn-default" %>
