@@ -41,7 +41,7 @@ class ViewersController < ApplicationController
   private
 
   def viewer_params
-    params.require(:viewer).permit(:name, :email, :password, :password_confirmation)
+    params.require(:viewer).permit(:name, :email)
   end
 
   def set_viewer

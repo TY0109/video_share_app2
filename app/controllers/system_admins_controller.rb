@@ -17,7 +17,7 @@ class SystemAdminsController < ApplicationController
   private
 
   def system_admin_params
-    params.require(:system_admin).permit(:name, :email, :password, :password_confirmation)
+    params.require(:system_admin).permit(:name, :email)
   end
 
   def set_system_admin
