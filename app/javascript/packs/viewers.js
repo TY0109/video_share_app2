@@ -10,7 +10,6 @@ require("channels")
 require('admin-lte');
 require("jquery");
 require ("./viewers/auth");
-require ("./viewers/sample");
 
 import 'bootstrap';
 import '../stylesheets/viewers';
