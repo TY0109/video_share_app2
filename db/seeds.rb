@@ -19,6 +19,12 @@
   viewer.save!
 end
 
+organization = Organization.new(
+  email: 'test_user@gmail.com',
+  name: 'セレブエンジニア'
+)
+
+organization.save!
 
 user = User.new(
   email: 'test_user@gmail.com',

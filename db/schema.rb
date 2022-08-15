@@ -12,16 +12,6 @@
 
 ActiveRecord::Schema.define(version: 2022_08_13_072827) do
 
-  create_table "articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "title", null: false
-    t.string "sub_title"
-    t.text "content", null: false
-    t.bigint "viewer_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["viewer_id"], name: "index_articles_on_viewer_id"
-  end
-
   create_table "loginless_viewers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -134,5 +124,4 @@ ActiveRecord::Schema.define(version: 2022_08_13_072827) do
     t.index ["unlock_token"], name: "index_viewers_on_unlock_token", unique: true
   end
 
-  add_foreign_key "articles", "viewers"
 end

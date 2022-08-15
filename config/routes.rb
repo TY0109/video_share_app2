@@ -23,7 +23,6 @@ Rails.application.routes.draw do
 
   namespace :viewers do
     resources :dash_boards, only: [:index]
-    resources :articles, only: %i[index show]
     resource :profile, except: %i[create new]
   end
 
