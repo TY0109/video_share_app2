@@ -29,7 +29,9 @@ organization.save!
 user = User.new(
   email: 'test_user@gmail.com',
   name: 'オーナー',
-  password: 'password'
+  password: 'password',
+  role: 1,
+  organization_id: 1      
 )
 
 user.skip_confirmation! # deviseの確認メールをスキップ
