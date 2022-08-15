@@ -1,0 +1,106 @@
+<!-- 動画コメント -->
+<% @comments.each do |comment| %>
+  <!-- replyカラムがnull（空）の場合（返信ではない場合） -->
+  <% if comment.reply.blank? %>
+    <div class="content-show-comment-bottom-top">
+      <div class="content-show-comment-bottom-top-user">
+        <!-- ユーザーアイコンを表示 --> 
+        <div class="content-show-comment-bottom-top-user-icon">
+          <%=  link_to "/users/#{comment.user.id}" do %>
+            <% if comment.viewer.image.present? %> 
+              <%= image_tag comment.viewer.image.url, width: '100%' %>
+            <% else %>
+              <%= image_tag('/images/default_user.jpg', width: '100%') %>
+          <% end %>
+        </div>
+        <!-- ユーザー名を表示 -->
+        <div class="content-show-comment-bottom-top-user-name">
+          <%= link_to "/users/#{comment.user.id}" do %>
+            <%= comment.user.name %>
+          <% end %>
+        <!-- 返信ボタン、削除ボタンを表示 -->
+        <div class="content-show-comment-bottom-top-icons">
+          <!-- コメントした本人であれば返信ボタンと削除ボタンを表示 -->
+          <% if user_signed_in? && current_user.id == comment.user.id %>
+            <div class="content-show-comment-bottom-top-icons-reply">
+              <%= link_to '#' do %>
+                <i class="fa fa-reply", id: "reply-btn#{comment.id}"></i>
+              <% end %>
+            </div>
+            <div class="content-show-comment-bottom-top-icons-delete">
+              <%= link_to video_comment_path(comment.video_id, comment.id), method: :delete do %>
+                <i class="fa trash-alt"></i>
+              <% end %>
+          <!-- ログインしているがコメントした人でない場合返信ボタンのみ表示 -->
+          <% elsif user_signed_in? && current_user.id != comment.user.id %>
+            <div class="content-show-comment-bottom-top-icons-reply" >
+              <%= link_to '#' do %>
+                <i class="fa fa-reply", id: "reply-btn#{comment.id}"></i>
+              <% end %>
+            </div>
+          <!-- それ以外は何も表示しない -->
+          <% else %>
+              <%= '' %>
+          <% end %>            
+        </div>
+      </div>
+    </div>        
+  <!-- ユーザーがログインしている場合のみ返信できるようにする -->
+  <% if user_signed_in? %>
+    <div class="content-show-comment-bottom-reply">
+      <!-- idをcomment.idに応じて変化させる -->
+      <%= form_with(model: [@video, @new_comment], local: true, id: "reply-form#{comment.id}") do |f| %>
+        <%= f.text_area :text, placeholder: "返信内容を記載して下さい。", id: "reply-text" %>
+        <!-- # 画面上には表示しないが、裏でreplyカラムに保存させるためにhidden_fieldを用いる！ -->
+        <%= f.hidden_field :reply, value: comment.id %>
+        <div class="content-show-comment-bottom-reply-btn">
+          <div class="content-show-comment-bottom-reply-btn-cansel">
+            <%= 'Cansel' %>
+          </div>
+          <%= f.submit "返信", class: "content-show-comment-bottom-reply-btn-send" %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
+
+<!-- 動画コメント返信表示 -->
+<% @replies.each do |reply| %>
+  <!-- comment.idと同じ場合のみ表示する -->
+  <% if reply.id == comment.id %>
+    <div class="content-show-comment-bottom-view-reply">
+      <div class="content-show-comment-bottom-view-reply-top">
+        <div class="content-show-comment-bottom-view-reply-top-user">
+          <div class="content-show-comment-bottom-view-reply-top-user-icon">
+            <%= link_to "/users/#{reply.user.id}" do %>
+              <% if reply.user.image.present? %>
+                <%= image_tag reply.user.image.url, width: '100%' %>
+              <% else %>
+                <%= image_tag('/images/default_user.jpg', width: '100%') %>
+              <% end %>
+            <% end %>
+          <div class="content-show-comment-bottom-view-reply-top-user-name">
+            <%= link_to "/users/#{reply.user.id}" do %>
+              <%= reply.user.name %>
+            <% end %>
+          </div>
+          <div class="content-show-comment-bottom-view-reply-top-icons">
+            <% if user_signed_in? && current_user.id == reply.user.id %>
+              <div class="content-show-comment-bottom-view-reply-top-icons-delete">
+                <%= link_to video_comment_path(reply.video_id, reply.id), method: :delete do %>
+                  <%= icon('fa', 'trash-alt') %>
+                <% end %>
+              </div>
+            <% else %>
+              <%= '' %>
+            <% end %>
+          </div>
+        </div>      
+      </div>
+      <div class="content-show-comment-bottom-view-reply-text">
+        <!-- 改行を含んだテキストも表示できるようにsimple_formatを使用 -->
+        <%= simple_format(reply.text) %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

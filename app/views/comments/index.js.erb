@@ -1,0 +1,23 @@
+// 返信フォームの表示・非表示切り替え
+
+$(function() {
+  // replyという配列に1から1000までを順番に格納していく
+  // 本当はビューやコントローラーからcomment.idを取ってきて格納できるのが理想
+  let reply = [];
+  for ( let i = 1 ; i <= 1000 ; i++ ) {
+    reply.push(i);
+  }
+  // eachでreplyの中から1つずつ値を取り出しビューで定義したid名に付与
+  $.each(reply, function(index, value) {
+    // 入力フォームは初め隠しておく
+    $("#reply-form" + value).hide();
+    // 返信ボタンをクリックしたら入力フォームを表示
+    $("#reply-btn" + value).on("click", function() {
+      $("#reply-form" + value).show();
+    });
+    // Canselボタンをクリックしたら入力フォームを非表示に
+    $(".content__show__comment__bottom__reply__btn__cansel").on("click", function() {
+      $("#reply-form" + value).hide();
+    });
+  });
+});

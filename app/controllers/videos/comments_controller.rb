@@ -5,34 +5,34 @@ class CommentsController < ApplicationController
     @comment = @video.comments.build(comment_params)
     current_user_types_of_comment
     if @comment.save
-      render template: "videos/videos/show"
+      render :index
     else
       flash.now[:danger] = "コメント投稿に失敗しました。"
-      render template: "videos/videos/show"
+      render :index
     end
   end
 
   def update
+    @video= Video.find(params[:video_id])
     @comment = Comment.find(params[:id])
     if @comment.update(comment_params)
-      @video= Video.find(params[:video_id])
       flash[:success] = "コメント編集に成功しました。"
     else
       flash[:danger] = "コメント編集に失敗しました。"
     end
-      render template: "videos/videos/show"
+      render :index
     end
   end
 
   def destroy
+    @video= Video.find(params[:video_id])
     @comment = Comment.find(params[:id])
     if @comment.destroy
-      @video= Video.find(params[:video_id])
       flash[:success] = "コメント削除に成功しました。"
     else
       flash[:danger] = "コメント削除に失敗しました。"
     end
-    render template: "videos/videos/show"
+    render :index
   end
 
   private
