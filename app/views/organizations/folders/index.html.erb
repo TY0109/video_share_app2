@@ -1,9 +1,10 @@
-<% provide(:title,  "動画一覧") %>
+<% provide(:title,  "動画フォルダ一覧") %>
 <div class="content">
+  <%= link_to "フォルダ新規作成", new_folder_path, remote: true, class: "btn btn-success" %>
   <div class="container-fluid">
     <div class="row">
       <%@folders.each do |folder|%>
-        <%= link_to folder_path ,method: :get do %>
+        <%= link_to folder_path(folder) ,method: :get do %>
           <i class="fa-solid fa-folder"></i>
         <% end %>
         <%=folder.name%>
@@ -12,3 +13,5 @@
     <!-- /.row -->
   </div><!-- /.container-fluid -->
 </div>
+
+<div id="new" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
