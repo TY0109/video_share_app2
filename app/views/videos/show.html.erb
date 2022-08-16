@@ -1,2 +1,20 @@
 <h1>Videos#show</h1>
-<p>Find me in app/views/videos/show.html.erb</p>
+<p>テスト画面です</p>
+
+<div class="row">
+  <ul>
+    <li class="comment-create">
+      <h3 class="text-left title">コメント</h3>
+    </li>
+    <li id="comments_area">
+      <%= render partial: 'comments/index', locals: { comments: @comments } %>
+    </li>
+  </ul>
+  <hr>
+  <% if user_signed_in? %>
+    <div class="comment-create">
+      <h3 class="text-left">コメントを投稿する</h3>
+        <%= render partial: 'comments/form', locals: { comment: @comment, video: @video } %>
+    </div>
+  <% end %>
+</div>

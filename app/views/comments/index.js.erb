@@ -16,8 +16,17 @@ $(function() {
       $("#reply-form" + value).show();
     });
     // Canselボタンをクリックしたら入力フォームを非表示に
-    $(".content__show__comment__bottom__reply__btn__cansel").on("click", function() {
+    $(".content-show-comment-bottom-reply-btn-cansel").on("click", function() {
       $("#reply-form" + value).hide();
     });
+  });
+});
+
+// 返信の表示・非表示切り替え
+$(function() {
+  $(".content-show-comment-bottom-view-reply").hide();
+  $(".content-show-comment-bottom-view-btn").on("click", function() {
+    // toggleにすると同じボタンを押したときに表示・非表示を切り替えてくれる
+    $(".content-show-comment-bottom-view-reply").toggle();
   });
 });
