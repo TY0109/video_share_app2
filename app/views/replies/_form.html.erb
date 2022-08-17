@@ -1,0 +1,13 @@
+<!-- コメント返信入力フォーム ------------------------------------------------------------>
+<!-- idをcomment.idに応じて変化させる -->
+<%= form_with(model: [@video, @new_comment], local: true, id: "reply-form#{comment.id}") do |f| %>
+  <%= f.text_area :text, placeholder: "返信内容を記載して下さい。", id: "reply-text" %>
+  <!-- # 画面上には表示しないが、裏でreplyカラムに保存させるためにhidden_fieldを用いる！ -->
+  <%= f.hidden_field :reply, value: comment.id %>
+  <div class="content-show-comment-bottom-reply-btn">
+    <div class="content-show-comment-bottom-reply-btn-cansel">
+      <p>キャンセル</p>
+    </div>
+    <%= f.submit "返信", class: "content-show-comment-bottom-reply-btn-send" %>
+  </div>
+<% end %>

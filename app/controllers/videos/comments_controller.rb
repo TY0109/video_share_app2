@@ -42,16 +42,4 @@ class CommentsController < ApplicationController
       )
     end
 
-    # コメントを投稿するアカウントに応じて保存するidを分ける
-    def current_user_types_of_comment
-      current_user_type = current_user && current_viewer && current_loginless_viewer
-      if current_user_type == current_user
-        @comment.user_id = current_user.id
-      elsif current_user_type == current_viewer
-        @comment.viewer_id = current_viewer.id
-      else
-        @comment.loginless_viewer_id = current_loginless_viewer.id
-      end
-    end
-
 end
