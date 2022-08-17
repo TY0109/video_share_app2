@@ -8,11 +8,17 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+Organization.create!(
+  name: 'テスト組織',
+  email: 'test_organization@gmail.com'
+)
+
 50.times do |i|
   user = User.new(
     email: "test_user#{i}@gmail.com", # sample: test_user1@gmail.com
     name: "テストuser#{i}",
-    password: 'password'
+    password: 'password',
+    organization_id: 1
   )
 
   user.skip_confirmation! # deviseの確認メールをスキップ
@@ -37,22 +43,19 @@ admin = Admin.new(
 admin.skip_confirmation! # deviseの確認メールをスキップ
 admin.save!
 
-Organization.create!(
-  name: 'テスト組織',
-  email: 'test_organization@gmail.com'
-)
-
 Viewer.create!(
   name: 'テスト視聴者',
   email: 'test_viewer@gmail.com'
 )
 
-Loginless_viewer.create!(
+LoginlessViewer.create!(
   name: 'テストログインなし視聴者',
   email: 'test_loginless_viewer@gmail.com'
 )
 
 Video.create!(
   video: 'https//www.youtube.com',
-  title: 'テスト動画'
+  title: 'テスト動画',
+  user_id: 1,
+  organization_id: 1
 )
