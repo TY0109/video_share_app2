@@ -38,17 +38,17 @@ admin.skip_confirmation! # deviseの確認メールをスキップ
 admin.save!
 
 Organization.create!(
-  name: 'テスト組織'
+  name: 'テスト組織',
   email:'test_organization@gmail.com'
 )
 
 Viewer.create!(
-  name: 'テスト視聴者'
+  name: 'テスト視聴者',
   email: 'test_viewer@gmail.com'
 )
 
 Loginless_viewer.create!(
-  name: 'テストログインなし視聴者'
+  name: 'テストログインなし視聴者',
   email: 'test_loginless_viewer@gmail.com'
 )
 
