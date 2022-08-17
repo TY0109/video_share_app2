@@ -39,7 +39,7 @@ admin.save!
 
 Organization.create!(
   name: 'テスト組織',
-  email:'test_organization@gmail.com'
+  email: 'test_organization@gmail.com'
 )
 
 Viewer.create!(
