@@ -12,9 +12,12 @@
             </td>
           </tr>
           <tr>
-            <td>
-              <%=folder.name%>
-            </td>
+            <th class = "<%=folder.id%>">
+              <%=folder.name%> &nbsp;
+              <%= link_to folder_path(folder), method: :delete, data: {confirm: "削除しますか？"} do%>
+                <i class="far fa-trash-alt" color=red></i>
+              <% end %>
+            </th>
           </tr>
         </table>
       <%end%>
