@@ -1,7 +1,13 @@
 FactoryBot.define do
-  factory :folder do
-    name { "MyString" }
+  factory :folder_celeb, class: 'Folder' do
+    name { 'セレブエンジニア' }
     organization_id { 1 }
-    video_id { 1 }
+    video_folder_id { 1 }
+  end
+
+  factory :folder_tech, class: 'Folder' do
+    name { 'テックリーダーズ' }
+    organization_id { 1 }
+    video_folder_id { 1 }
   end
 end

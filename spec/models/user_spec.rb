@@ -172,38 +172,4 @@ RSpec.describe User, type: :model do
       end
     end
   end
-
-  describe '記事とのアソシエーションについて' do
-    let :user do
-      create(:user, articles: articles)
-    end
-
-    let :articles do
-      create_list(:article, 2)
-    end
-
-    context '紐つく記事がある場合' do
-      subject do
-        user.articles
-      end
-
-      it '紐つく記事を返すこと' do
-        expect(subject).to eq(articles)
-      end
-    end
-
-    context 'userを削除した場合' do
-      subject do
-        user.destroy
-      end
-
-      before :each do
-        user
-      end
-
-      it '記事も削除されること' do
-        expect { subject }.to change(Article, :count).by(-2)
-      end
-    end
-  end
 end

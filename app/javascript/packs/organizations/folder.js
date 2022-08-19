@@ -5,7 +5,7 @@ jQuery(function($){
       $(this).addClass('on');
       var txt = $(this).text();
       const folderId = $(this).attr('class');
-      $(this).html('<input type="text" value='+txt+' style="width: 100px;">');
+      $(this).html('<input type="text" value='+txt+' style="width: 150px;">');
       $('th > input').focus().blur(function(){
         var inputVal = $(this).val();
         if(inputVal===''){
