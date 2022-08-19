@@ -17,7 +17,7 @@ class Organizations::FoldersController < ApplicationController
 
   def create
     @folder = Folder.new(folder_params)
-    if @folder.save
+    if @folder.create(current_user)
       redirect_to folders_path, flash: { success: 'フォルダを作成しました！' }
     else
       render "new"
@@ -25,8 +25,7 @@ class Organizations::FoldersController < ApplicationController
   end
 
   def update
-    @folders = Folder.current_owner_has(current_user)
-    if @folder.update(folder_params)
+    if @folder.owner_has?(current_user) && @folder.update(folder_params)
       redirect_to folders_path
     else
       flash[:danger] = "フォルダ名が空欄、もしくは同じフォルダ名があります。"
@@ -35,18 +34,18 @@ class Organizations::FoldersController < ApplicationController
   end
 
   def destroy
-    if @folder.destroy
+    if @folder.owner_has?(current_user) && @folder.destroy
       flash[:danger] = "フォルダを削除しました"
       redirect_to folders_path
     else
-      render "index"
+      redirect_to folders_path
     end
   end
 
   private
 
   def folder_params
-    params.require(:folder).permit(:name).merge(organization_id: current_user.organization_id)
+    params.require(:folder).permit(:name)
   end
 
   def set_folder
