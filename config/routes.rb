@@ -49,5 +49,10 @@ Rails.application.routes.draw do
   get 'use' => 'use#index'
   # トップページ
   root 'use#top'
+
+  resources :organizations, only: %i[show edit update destroy] do
+  end
+  resources :loginless_viewers, only: %i[show index destroy] do
+  end
   # =================================================================
 end

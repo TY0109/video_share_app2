@@ -1,0 +1,21 @@
+<% provide(:title, "組織詳細") %>
+
+<div class="card">
+  <div class="card-body table-responsive p-0">
+    <table class="table table-hover text-nowrap">
+      <tbody>
+        <tr>
+          <th><%= "名前" %></th>
+          <td><%= @organization.name %></td>
+        </tr>
+        <tr>
+          <th><%= "メールアドレス" %></th>
+          <td><%= @organization.email %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer">
+    <%= link_to "編集", edit_organization_path, class: "btn btn-md btn-block btn-success" %>
+  </div>
+</div>
