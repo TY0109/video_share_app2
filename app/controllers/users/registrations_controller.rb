@@ -7,7 +7,7 @@ module Users
 
     # GET /resource/sign_up
     def new
-      @user = User.new
+      @organization = Organization.new
       2.times { @organization.users.build }
       super
     end
