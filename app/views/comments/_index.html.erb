@@ -1,5 +1,5 @@
 <!-- 動画コメント -->
-<% @comments.each do |comment| %>
+<% comments.each do |comment| %>
   <!-- replyカラムがnullの場合（返信ではない場合） -->
   <% if comment.reply.blank? %>
     <div class="content-show-comment-bottom-top">
@@ -11,6 +11,7 @@
               <%= image_tag comment.viewer.image.url, width: '100%' %>
             <% else %>
               <%= image_tag('/images/default_user.jpg', width: '100%') %>
+            <% end %>
           <% end %>
         </div>
         <!-- ユーザー名を表示 -->

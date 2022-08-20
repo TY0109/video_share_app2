@@ -5,7 +5,4 @@ class Reply < ApplicationRecord
   belongs_to :loginless_viewer
   belongs_to :comment
 
-    # バリデーション
-    validates :reply, presence: true
-
 end

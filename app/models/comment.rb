@@ -13,12 +13,12 @@ class Comment < ApplicationRecord
 
   # コメントするアカウントをセット
   def set_current_user_type
-    @current_user_type = current_user && current_viewer && current_loginless_viewer
+    @current_user_type = (current_user || current_viewer || current_loginless_viewer)
   end
 
   # コメントしたアカウントのidをセット
   def set_commenter_id
-    current_user_type = current_user && current_viewer && current_loginless_viewer
+    current_user_type = (current_user || current_viewer || current_loginless_viewer)
     if current_user_type == current_user
       @comment.user_id = current_user.id
     elsif current_user_type == current_viewer
