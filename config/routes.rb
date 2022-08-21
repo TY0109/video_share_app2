@@ -43,4 +43,7 @@ Rails.application.routes.draw do
   # 利用規約
   get 'use' => 'use#index'
   # =================================================================
+
+  # 追記
+  resources :videos
 end

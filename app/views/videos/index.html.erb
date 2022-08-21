@@ -1,0 +1,10 @@
+<div class="content">
+<h1>ビデオ一覧</h1>
+<% @videos.each do |video| %>
+<video class="video-index" controls>
+  <source src="<%= url_for(video.video) %>">
+</video><br>
+  <%= link_to video.title, video_path(video) %>
+  <%= link_to "削除", video_path(video), method: :delete, data:{confirm:"「#{video.title}」を削除します。よろしいですか？"} %>
+<% end %>
+</div>

@@ -1,0 +1,5 @@
+<h1>ビデオ詳細</h1>
+<video class="video-show" controls>
+  <source src="<%= url_for(@video.video) %>"><br>
+</video><br>
+<%= link_to "削除", video_path(@video), method: :delete, data:{confirm:"「#{@video.title}」を削除します。よろしいですか？"} %>
