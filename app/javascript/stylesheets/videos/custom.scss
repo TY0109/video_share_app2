@@ -1,0 +1,58 @@
+@mixin videoBox{
+  height: 300px;
+  width: 300px;
+  // ホーバー時に、マウスキーをカーソル型に変形
+  cursor: pointer;
+  // これがないと、後述のz-indexが効かない
+  position: absolute;
+}
+
+// file_fieldでvideoBoxの範囲を覆い尽くす
+#post{
+  @include videoBox;
+  background-color: aqua;
+  z-index: 1;
+}
+
+// choice_boxクラスでvideoBoxの範囲を覆い尽くす
+.choice_box{
+  @include videoBox;
+  background-color: rgb(186, 186, 186);
+  // file_fieldより上に来るように、z-indexを大きくしている
+  z-index: 2;
+  pointer-events: none;
+  line-height: 300px;
+  text-align: center;
+  border: 2px dashed black;
+}
+
+#show{
+  height: 300px;
+  width: 300px;
+  border: 2px solid #333;
+  position: absolute;
+  top: 300;
+  left: 300px;
+  video{
+    height: 296px;
+    width: 296px;
+    object-fit: cover;
+  }
+}
+
+
+
+.actions{
+  position: absolute;
+  top: 1000;
+  left: 0;
+}
+
+// videos#indexページ
+.video-index{
+    height: 200px;
+    width: 200px;
+    object-fit: cover;
+}
+
+
