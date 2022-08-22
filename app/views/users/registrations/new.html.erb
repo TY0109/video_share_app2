@@ -1,4 +1,5 @@
 <h2><%= t('.sign_up') %></h2>
+<%= notice %>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
@@ -28,16 +29,11 @@
 
   <%= f.fields_for :organizations do |organization_fields| %>
     <%= organization_fields.label :組織名 %><br />
-    <%= organization_fields.text_field :name, required: true %><br />
-    <%# フォームでのバリデーションと初期値設定入力がない状態だとエラー %>
-    <%#= organization_fields.text_field :name, required: true, value: params[:user][:organizations][:name] %><br />
-
+    <%= organization_fields.text_field :name %><br />
+    
     <%= organization_fields.label :組織のEメール %><br />
-    <%= organization_fields.text_field :email, required: true, pattern: "[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" %><br />
-    <%# フォームでのバリデーションと初期値設定入力がない状態だとエラー %>
-    <%#= organization_fields.text_field :email, required: true, value: params[:user][:organizations][:email], pattern: "[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" %><br />
-
-    <%# end %>
+    <%= organization_fields.text_field :email %><br />
+    
   <% end %>
 
   <div class="actions">

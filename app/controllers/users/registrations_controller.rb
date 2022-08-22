@@ -14,15 +14,16 @@ module Users
 
     # POST /resource
     def create
-      # ここでUser.new（と同等の操作）を行う
-      build_resource(sign_up_params)
-
-      # ここでUser.save（と同等の操作）を行う
-      resource.save
-      # binding.pry
-      @organization = Organization.new(organization_params)
-      @organization.save
-      
+      ActiveRecord::Base.transaction do
+        # ここでUser.new（と同等の操作）を行う
+        build_resource(sign_up_params)
+  
+        # ここでUser.save（と同等の操作）を行う
+        resource.save!
+        # binding.pry
+        @organization = Organization.new(organization_params)
+        @organization.save!
+      end
     
 
       # ブロックが与えられたらresource(=User)を呼ぶ
@@ -52,6 +53,9 @@ module Users
         set_minimum_password_length
         respond_with resource
       end
+    rescue ActiveRecord::RecordInvalid # トランザクションによるエラーの分岐です。  
+      flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
+      render :new
     end
 
     # GET /resource/edit
