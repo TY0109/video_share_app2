@@ -7,12 +7,12 @@
       <h3 class="text-left title">コメント</h3>
     </li>
     <li id="comments_area">
-      <%= render partial: 'comments/index', locals: { comments: @comments } if @comments.present? %>
+      <%= render partial: 'comments/index' if @comments.present? %>
     </li>
   </ul>
   <hr>
   <div class="comment-create">
     <h3 class="text-left">コメントを投稿する</h3>
-      <%= render partial: 'comments/form', locals: { comment: @comment, video: @video } %>
+      <%= render partial: 'comments/form' %>
   </div>
 </div>

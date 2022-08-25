@@ -41,7 +41,9 @@ Rails.application.routes.draw do
 
   # video関連=========================================================
   resources :videos do
-    resources :comments, only: %i[create update destroy]
+    resources :comments, only: %i[create update destroy] do
+      resources :replies, only: %i[create update destroy]
+    end
   end
 
   # =================================================================
