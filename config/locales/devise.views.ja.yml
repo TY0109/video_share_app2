@@ -81,8 +81,17 @@ ja:
       organization:
         created_at: 作成日
         current_password: 現在のパスワード
-        email: Eメール
+        email: 組織のEメール
+        name: 組織名
         updated_at: 更新日
+      organization/users:
+        created_at: 作成日
+        current_password: 現在のパスワード
+        password_confirmation: 投稿者のパスワード（確認用）
+        password: 投稿者のパスワード
+        email: 投稿者のEメール
+        name: 投稿者の名前
+        updated_at: 更新日  
     models:
       system_admin: システム管理者
       user: 投稿者

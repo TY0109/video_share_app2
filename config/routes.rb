@@ -50,7 +50,7 @@ Rails.application.routes.draw do
   # トップページ
   root 'use#top'
 
-  resources :organizations, only: %i[show edit update destroy] do
+  resources :organizations do
   end
   resources :loginless_viewers, only: %i[show index destroy] do
   end

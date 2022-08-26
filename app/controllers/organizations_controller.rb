@@ -3,14 +3,22 @@ class OrganizationsController < ApplicationController
 
   def new
     @organization = Organization.new
+    @user = User.new
   end
 
   def create
-    @organization = Organization.new(organization_params)
-    if @organization.save
-      flash[:success] = "#{@organization.name}の作成に成功しました"
-      redirect_to organization_url
-    else
+    ActiveRecord::Base.transaction do
+    @user = User.new(user_params)
+    form = Organizations::Form.new(params_permitted)
+    @organization = Organization.build(form.params)
+      if @organization.save!
+        flash[:success] = '送られてくるメールの認証URLからアカウントの認証をしてください。'
+        redirect_to new_user_session_path
+      else
+        render :new
+      end
+    rescue ActiveRecord::RecordInvalid
+      flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
       render :new
     end
   end
@@ -43,4 +51,15 @@ class OrganizationsController < ApplicationController
   def set_organization
     @organization = Organization.find(params[:id])
   end
+
+  def params_permitted
+    params.require(:organization).permit(:name, :email, users: [:name, :email, :password, :password_confirmation])
+  end
+
+  def user_params
+    params.require(:organization).permit(users: [:name, :email, :password, :password_confirmation])[:users]
+  end
+
 end
+
+

@@ -10,9 +10,8 @@ class User < ApplicationRecord
   enum role: { video_contributor: 0, owner: 1 }
 
   belongs_to :organization
-  validates_presence_of :organization
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, uniqueness: true, format: { with: VALID_EMAIL_REGEX }
-  validates :name,  presence: true, length: { in: 1..10 }
+  validates :name,  presence: true, uniqueness: true, length: { in: 3..10 }
 end

@@ -35,7 +35,7 @@ module Viewers
           flash[:success] = '送られてくるメールの認証URLからアカウントの認証をしてください。'
           # sessionを削除
           expire_data_after_sign_in!
-          respond_with resource, location: new_user_session_path
+          respond_with resource, location: new_viewer_session_path
         end
       else
         # 先程のresource.saveが失敗していたら

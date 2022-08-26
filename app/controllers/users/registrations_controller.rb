@@ -6,57 +6,14 @@ module Users
     # before_action :configure_account_update_params, only: [:update]
 
     # GET /resource/sign_up
-    def new
-      @organization = Organization.new
-      2.times { @organization.users.build }
-      super
-    end
+    # def new
+    #   super
+    # end
 
     # POST /resource
-    def create
-      ActiveRecord::Base.transaction do
-        # ここでUser.new（と同等の操作）を行う
-        build_resource(sign_up_params)
-  
-        # ここでUser.save（と同等の操作）を行う
-        resource.save!
-        # binding.pry
-        @organization = Organization.new(organization_params)
-        @organization.save!
-      end
-    
-
-      # ブロックが与えられたらresource(=User)を呼ぶ
-      yield resource if block_given?
-      if resource.persisted?
-        # 先程のresource.saveが成功していたら
-        if resource.active_for_authentication?
-          
-          # confirmable/lockableどちらかのactive_for_authentication?がtrueだったら
-          # flashメッセージを設定
-          set_flash_message! :notice, :signed_up
-          # サインアップ操作
-          sign_up(resource_name, resource)
-          # リダイレクト先を指定
-          respond_with resource, location: after_sign_up_path_for(resource)
-        else
-          flash[:success] = '送られてくるメールの認証URLからアカウントの認証をしてください。'
-          # sessionを削除
-          expire_data_after_sign_in!
-          respond_with resource, location: new_user_session_path
-        end
-      else
-        # 先程のresource.saveが失敗していたら
-        # passwordとpassword_confirmationをnilにする
-        clean_up_passwords resource
-        # validatable有効時に、パスワードの最小値を設定する
-        set_minimum_password_length
-        respond_with resource
-      end
-    rescue ActiveRecord::RecordInvalid # トランザクションによるエラーの分岐です。  
-      flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
-      render :new
-    end
+    # def create
+    #   super
+    # end
 
     # GET /resource/edit
     # def edit
@@ -103,10 +60,5 @@ module Users
     # def after_inactive_sign_up_path_for(resource)
     #   super(resource)
     # end
-
-    def organization_params
-      params.require(:user).permit(organizations: [:name, :email])[:organizations]
-    end
-
   end
 end
