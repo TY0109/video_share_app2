@@ -4,13 +4,9 @@ class CommentsController < ApplicationController
   before_action :correct_system_admin_or_user_or_viewer_comment, only: %i[update destroy]
   before_action :account_logged_in?
   helper_method :account_logged_in?
-  protect_from_forgery { :except => [:destroy] }
 
   def create
-    @reply = Reply.new
     set_video_id
-    # videoに紐づいたコメントを取得
-    @comments = @video.comments.includes(:system_admin, :user, :viewer, :replies).order(created_at: :desc)
     @comment = @video.comments.build(comment_params)
     # コメント投稿したアカウントをセット
     set_commenter_id
@@ -19,41 +15,39 @@ class CommentsController < ApplicationController
     else
       flash.now[:danger] = 'コメント投稿に失敗しました。'
     end
+    @reply = Reply.new
     render :index
   end
 
   def update
-    @reply = Reply.new
-    set_video_id
     set_commenter_id
-    @comments = @video.comments.includes(:system_admin, :user, :viewer, :replies).order(created_at: :desc)
     @comment = Comment.find(params[:id])
     if @comment.update(comment_params)
       flash.now[:success] = 'コメント編集に成功しました。'
     else
       flash.now[:danger] = 'コメント編集に失敗しました。'
     end
+    @reply = Reply.new
     render :index
   end
 
   def destroy
-    @reply = Reply.new
     set_video_id
     set_commenter_id
     @comment = Comment.find(params[:id])
     if @comment.destroy
       flash.now[:success] = 'コメント削除に成功しました。'
-      @comments = @video.comments.includes(:system_admin, :user, :viewer, :replies).order(created_at: :desc)
     else
       flash.now[:danger] = 'コメント削除に失敗しました。'
     end
+    @reply = Reply.new
     render :index
   end
 
   private
 
   def comment_params
-    params.require(:comment).permit(:comment, :video_id, :organization_id).merge(
+    params.require(:comment).permit(:comment).merge(
       organization_id: @video.organization_id
     )
   end

@@ -1,6 +1,7 @@
 <!-- コメント返信入力フォーム ------------------------------------------------------------>
 <div class="form-group">
-  <%= form_with(model: @reply, url: video_comment_replies_path(@video.id, comment.id), method: :post, local: false, id: "reply-form-#{comment.id}") do |f| %>
+  <%= form_with(model: reply, url: video_comment_replies_path(video, comment), method: :post, local: false, id: "reply-form-#{comment.id}") do |f| %>
+    <%= render '/shared/error_messages', object: f.object %>
     <%= f.text_area :reply, placeholder: "返信内容を記載して下さい。", id: "reply-text", class: "form-control" %>
     <div class="content-show-comment-bottom-reply-btn float-right">
       <%= f.submit "返信", class: "btn btn-warning" %>

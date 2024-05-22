@@ -5,13 +5,8 @@ class RepliesController < ApplicationController
   before_action :system_admin_or_correct_user_viewer_reply, only: %i[update destroy]
   before_action :account_logged_in?
   helper_method :account_logged_in?
-  protect_from_forgery { :except => [:destroy] }
 
   def create
-    # videoのidを取得
-    set_video_id
-    # videoに紐づいたコメントを取得
-    @comments = @video.comments.includes(:system_admin, :user, :viewer, :replies).order(created_at: :desc)
     @reply = @comment.replies.build(reply_params)
     # コメント返信したアカウントをセット
     set_replyer_id
@@ -24,7 +19,6 @@ class RepliesController < ApplicationController
   end
 
   def update
-    @comments = @video.comments.includes(:system_admin, :user, :viewer, :replies).order(created_at: :desc)
     if @reply.update(reply_params)
       flash.now[:success] = 'コメント返信の編集に成功しました。'
     else
@@ -46,8 +40,8 @@ class RepliesController < ApplicationController
   private
 
   def reply_params
-    params.require(:reply).permit(:reply, :comment_id, :organization_id).merge(
-      comment_id: @comment.id, organization_id: @video.organization_id
+    params.require(:reply).permit(:reply).merge(
+      organization_id: @video.organization_id
     )
   end
 

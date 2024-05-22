@@ -36,9 +36,12 @@ $(document).on('turbolinks:load', function() {
       const textField = $("#js-textarea-comment-" + commentId);
       const updateComment = textField.val();
 
+      const token = $('meta[name="csrf-token"]').attr('content'); // 追加
+
       $.ajax({
         type: "PATCH",
         url: `/videos/${videoId}/comments/` + commentId,
+        headers: {'X-CSRF-Token' : token }, // 追加
         data: {
           comment: {
             comment: updateComment,
@@ -150,4 +153,3 @@ $(function () {
     $("#content-show-comment-bottom-reply-content-" + commentId).toggle();
   });
 });
-

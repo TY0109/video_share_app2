@@ -1,6 +1,9 @@
 <!-- 'videos/show'で使用 -------------------------------------------------------------------------------------------------------------->
-<h5>コメント一覧 <%= "(#{@comments.count}件)" %></h5>
-<% @comments.each do |comment| %>
+<h5>コメント一覧 <%= "(#{comments.count}件)" %></h5>
+<div class = "fkash-message">
+  <%= render 'layouts/flash' %>
+</div>
+<% comments.each do |comment| %>
   <h5>コメント</h5>
   <div class="content-show-comment-bottom-top">
     <div class="content-show-comment-bottom-top-user">
@@ -67,7 +70,7 @@
       <button type="button" class="btn btn-light rounded-pill">返信</button>
     </div>
     <div id="content-show-comment-bottom-reply-form-<%= comment.id %>" style="display: none;">
-      <%= render partial: 'replies/form', locals: { comment: comment } %>
+      <%= render partial: 'replies/form', locals: { comment: comment, reply: @reply, video: @video } %>
     </div>
   <% end %>
 
