@@ -94,7 +94,7 @@ ja:
       video:
         id: ID
         title: タイトル
-        video: ビデオ
+        video_file: ビデオ
         audience_rate: 視聴率
         open_period: 公開期間
         range: 動画公開範囲

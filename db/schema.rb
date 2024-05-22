@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_08_203829) do
+ActiveRecord::Schema.define(version: 2024_05_22_152345) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -59,7 +59,6 @@ ActiveRecord::Schema.define(version: 2023_07_08_203829) do
   create_table "folders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.bigint "organization_id", null: false
-    t.integer "video_folder_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["organization_id"], name: "index_folders_on_organization_id"
@@ -188,7 +187,6 @@ ActiveRecord::Schema.define(version: 2023_07_08_203829) do
     t.boolean "login_set", default: false
     t.boolean "popup_before_video", default: false
     t.boolean "popup_after_video", default: false
-    t.string "data_url", null: false
     t.boolean "is_valid", default: true, null: false
     t.bigint "organization_id", null: false
     t.bigint "user_id"

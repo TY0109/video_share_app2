@@ -42,9 +42,10 @@ gem 'dotenv-rails'
 gem 'font-awesome-rails'
 
 gem 'activestorage-validator'
-gem 'vimeo_me2', git: 'https://github.com/bo-oz/vimeo_me2.git'
 
 gem 'stripe'
+
+gem 'active_decorator'
 
 group :development, :test do
   # ERD生成
