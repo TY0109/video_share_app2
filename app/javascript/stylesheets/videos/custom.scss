@@ -1,38 +1,43 @@
+// この設定内容が、#postと、.choice_boxの両方に適用される
 @mixin videoBox{
   height: 300px;
   width: 600px;
-  // ホーバー時に、マウスキーをカーソル型に変形
   cursor: pointer;
-  // これがないと、後述のz-indexが効かない
+  // relativeを指定した親要素はないので、ページの一番上の親が基準になる
   position: absolute;
 }
 
-// file_fieldでvideoBoxの範囲を覆い尽くす
+// ファイル入力を行うfile_field
 #post{
+  // 上述のvideoBoxの設定を適用
   @include videoBox;
   background-color: aqua;
-  z-index: 1;
+  // ページの一番上の親を基準として、z-indexの値を1に設定
+  z-index: 1; // .choice_boxより下に来るように、z-indexを小さくしている
 }
 
-// choice_boxクラスでvideoBoxの範囲を覆い尽くす
+// ドラッグ&ドロップの文字を表示
 .choice_box{
+  // 上述のvideoBoxの設定を適用
   @include videoBox;
   background-color: rgb(186, 186, 186);
-  // file_fieldより上に来るように、z-indexを大きくしている
-  z-index: 2;
+  // ページの一番上の親を基準として、z-indexの値を2に設定
+  z-index: 2; // #postより上に来るように、z-indexを大きくしている
   pointer-events: none;
   line-height: 300px;
   text-align: center;
   border: 2px dashed black;
-  position:relative;
 }
 
+// アップした動画のプレビュー表示
 #show{
   height: 300px;
   width: 600px;
   border: 2px solid #333;
-  position:absolute;
-  top:300px;
+  // relativeを指定した親要素はないので、ページの一番上の親が基準となる
+  position: absolute;
+  // ページの一番上の親を基準としてとして上から300pxのところに配置
+  top: 300px;
   video{
     height: 296px;
     width: 596px;
@@ -49,7 +54,7 @@
 }
 
 .video-info{
-  z-index: 3;
+  z-index: 3; // ページの一番上の親を基準として、z-indexの値を3に設定。ブラウザを縮小しても最上部に表示される
 }
 
 // videos#indexページ
