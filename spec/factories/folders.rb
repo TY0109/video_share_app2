@@ -4,20 +4,17 @@ FactoryBot.define do
     id { 1 }
     name { 'セレブエンジニア' }
     organization_id { 1 }
-    video_folder_id { 1 }
   end
 
   factory :folder_tech, class: 'Folder' do
     id { 2 }
     name { 'テックリーダーズ' }
     organization_id { 1 }
-    video_folder_id { 1 }
   end
 
   factory :folder_other_owner, class: 'Folder' do
     id { 3 }
     name { 'IT' }
     organization_id { 1 }
-    video_folder_id { 1 }
   end
 end

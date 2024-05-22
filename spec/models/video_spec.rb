@@ -1,70 +1,106 @@
 require 'rails_helper'
+
 RSpec.describe Video, type: :model do
-  let(:organization) { create(:organization) }
-  let(:user_owner) { create(:user_owner, organization_id: organization.id) }
-  let(:user_staff) { create(:user_staff, organization_id: organization.id) }
+  # let!は、宣言のタイミングでcreate, letは呼び出されたタイミングでcreate
+  # organization, user_owner, user_staffは当ファイルで呼び出されないので、let!しておかないと、videoの作成時に関連付けができない
+  let!(:organization) { create(:organization) }
+  let!(:user_owner) { create(:user_owner, organization_id: organization.id) }
+  let!(:user_staff) { create(:user_staff, organization_id: organization.id) }
 
-  let(:video_sample) do
-    create(:video_sample, organization_id: user_owner.organization.id, user_id: user_owner.id, folders: [folder_celeb, folder_tech])
-  end
-  let(:video_test) { create(:video_test, organization_id: user_staff.organization.id, user_id: user_staff.id, folders: [folder_celeb]) }
-  let(:video_it) { create(:video_it, organization_id: user_owner.organization.id, user_id: user_owner.id) }
+  let(:uploaded_file) { fixture_file_upload('aurora.mp4', 'video/mp4') } # ActionDispatch::Http::UploadedFileオブジェクト
+  let(:video_sample) { build(:video_sample, video_file: uploaded_file) }
+  let(:video_test) { create(:video_test, video_file: uploaded_file) }
+  
+  describe "#バリデーションチェック" do
+    context '正常な場合' do
+      it '有効であること' do
+        expect(video_sample).to be_valid
+      end
+    end
 
-  let(:folder_celeb) { create(:folder_celeb, organization_id: user_owner.organization_id) }
-  let(:folder_tech) { create(:folder_tech, organization_id: user_owner.organization_id) }
+    context '異常な場合' do
+      context 'タイトルにバリデーションエラーがある場合' do
+        it '空白ではエラーになること' do
+          video_sample.title = ''
+          expect(video_sample).not_to be_valid
+          expect(video_sample.errors.full_messages).to include('タイトルを入力してください')
+        end
 
-  before(:each) do
-    organization
-    user_owner
-    sleep 0.1
-  end
+        it '重複するとエラーになること' do
+          upload_to_vimeo_mock
+          video_test
+          video_sample.title = 'テストビデオ'
+          expect(video_sample).not_to be_valid
+          expect(video_sample.errors.full_messages).to include('タイトルはすでに存在します')
+        end
+      end
 
-  describe '正常' do
-    it '正常値で保存可能' do
-      expect(video_sample.valid?).to eq(true)
+      context '組織IDにバリデーションエラーがある場合' do
+        it '空白ではエラーになること' do
+          video_sample.organization_id = ''
+          expect(video_sample).not_to be_valid
+          expect(video_sample.errors.full_messages).to include('組織を入力してください')
+        end
+      end
+
+      context '投稿者IDにバリデーションエラーがある場合' do
+        it '空白ではエラーになること' do
+          video_sample.user_id = ''
+          expect(video_sample).not_to be_valid
+          expect(video_sample.errors.full_messages).to include('投稿者を入力してください')
+        end
+      end
+
+      context 'video_fileにバリデーションエラーがある場合' do
+        it 'nilではエラーになること' do
+          video_sample.video_file = nil
+          expect(video_sample).not_to be_valid
+          expect(video_sample.errors.full_messages).to include('ビデオを入力してください')
+        end
+
+        it '拡張子が不正ではエラーになること' do
+          video_sample.video_file.content_type = "image/png"
+          expect(video_sample).not_to be_valid
+          expect(video_sample.errors.full_messages).to include('ビデオの拡張子が不正です')
+        end
+      end
     end
   end
 
-  describe 'バリデーション' do
-    describe 'タイトル' do
-      before(:each) do
-        video_it
+  describe "#upload_to_vimeo" do
+    context 'vimeoに動画をアップできた場合' do
+      it 'data_urlに動画のURLが格納され、保存に成功すること' do
+        upload_to_vimeo_mock
+        expect(video_sample.save).to eq true
+        expect(video_sample.data_url).to eq("/videos/949110689")
       end
 
-      it '空白' do
-        video_test.title = ''
-        expect(video_test.valid?).to eq(false)
-        expect(video_test.errors.full_messages).to include('タイトルを入力してください')
-      end
+      # 上記テストをvcrで行う場合
+      # 以下でvimeoへの動画投稿を実際に行いリクエストとレスポンスを記録
+      # VCR.use_cassette("vimeo_upload") do
+      #   vimeo_client = VimeoMe2::User.new(ENV['VIMEO_API_TOKEN'])
+      #   vimeo_client.upload_video(uploaded_file)
+      # end
+      # → vcr_cassets/vimeo_upload.ymlが作成され記録される
 
-      it '重複' do
-        video_test.title = 'ITビデオ'
-        expect(video_test.valid?).to eq(false)
-        expect(video_test.errors.full_messages).to include('タイトルはすでに存在します')
-      end
+      # it 'data_urlに動画のURLが格納され、保存に成功すること' do
+      #   # vcr_cassets/vimeo_upload.ymlの結果を使い回すことで、実際に動画をアップしなくても、同じリクエストを送り同じレスポンスを得ることができる
+      #   VCR.use_cassette("vimeo_upload") do
+      #     expect(video_sample.save).to eq true
+      #     expect(video_sample.data_url).to eq("/videos/949110689")
+      #   end
+      # end
     end
 
-    describe '組織ID' do
-      it '空白' do
-        video_test.organization_id = ''
-        expect(video_test.valid?).to eq(false)
-        expect(video_test.errors.full_messages).to include('組織を入力してください')
-      end
-    end
-
-    describe '投稿者ID' do
-      it '空白' do
-        video_test.user_id = ''
-        expect(video_test.valid?).to eq(false)
-        expect(video_test.errors.full_messages).to include('投稿者を入力してください')
-      end
-    end
-
-    describe '動画データ' do
-      it '空白または動画以外のファイル' do
-        video_test.data_url = nil
-        expect(video_test.valid?).to eq(false)
-        expect(video_test.errors.full_messages).to include('ビデオをアップロードしてください')
+    context '認証エラーや容量超過でvimeoに動画をアップできなかった場合' do
+      it 'data_urlに動画のURLが格納されず、保存に失敗すること' do
+        # save前に呼び出されるupload_to_vimeoメソッドについて、
+        # モック化して例外VimeoMe2::RequestFailedを発生させる
+        vimeo_user_instance = instance_double(VimeoMe2::User)
+        allow(VimeoMe2::User).to receive(:new).and_return(vimeo_user_instance)
+        allow(vimeo_user_instance).to receive(:upload_video).and_raise(VimeoMe2::RequestFailed)
+        expect(video_sample.save).to eq false
+        expect(video_sample.data_url).to eq nil
       end
     end
   end

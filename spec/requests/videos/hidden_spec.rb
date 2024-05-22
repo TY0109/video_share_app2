@@ -1,121 +1,106 @@
 require 'rails_helper'
 
-RSpec.describe 'UserUnsubscribe', type: :request do
+RSpec.describe 'VideoHidden', type: :request do
   let(:system_admin) { create(:system_admin, confirmed_at: Time.now) }
 
-  let(:organization) { create(:organization) }
-  let(:user_owner) { create(:user_owner, organization_id: organization.id, confirmed_at: Time.now) }
-  let(:user_staff) { create(:user_staff, organization_id: organization.id, confirmed_at: Time.now) }
-  let(:video_test) { create(:video_test, organization_id: user_staff.organization.id, user_id: user_staff.id) }
+  let!(:organization) { create(:organization) }
+  let!(:user_owner) { create(:user_owner, confirmed_at: Time.now) }
+  let!(:user_staff) { create(:user_staff, confirmed_at: Time.now) }
+
+  let!(:another_organization) { create(:another_organization) }
+  let!(:another_user_owner) { create(:another_user_owner, confirmed_at: Time.now) }
+
   # orgにのみ属す
-  let(:viewer) { create(:viewer, confirmed_at: Time.now) }
-
-  let(:another_organization) { create(:another_organization) }
-  let(:another_user_owner) { create(:another_user_owner, organization_id: another_organization.id, confirmed_at: Time.now) }
-
+  let!(:viewer) { create(:viewer, confirmed_at: Time.now) }
   # orgとviewerの紐付け
-  let(:organization_viewer) { create(:organization_viewer) }
+  let!(:organization_viewer) { create(:organization_viewer) }
 
-  before(:each) do
-    system_admin
-    organization
-    another_organization
-    user_owner
-    another_user_owner
-    user_staff
-    viewer
-    organization_viewer
+  let(:uploaded_file) { fixture_file_upload('aurora.mp4', 'video/mp4') } # ActionDispatch::Http::UploadedFileオブジェクト
+  let(:video_sample) { create(:video_sample, video_file: uploaded_file) }
+
+  before do
+    upload_to_vimeo_mock
+    destroy_from_vimeo_mock
   end
+  
+  # TODO: describe "#confirm" do; end
 
-  describe '動画論理削除' do
-    context '正常～異常' do
-      context 'システム管理者操作' do
-        before(:each) do
-          current_system_admin(system_admin)
-        end
-
-        it '論理削除できる' do
-          expect {
-            patch videos_withdraw_path(video_test)
-          }.to change { Video.find(video_test.id).is_valid }.from(video_test.is_valid).to(false)
-        end
-
-        it '論理削除した後もvideos#showにアクセスできる' do
-          expect {
-            patch videos_withdraw_path(video_test)
-          }.to change { Video.find(video_test.id).is_valid }.from(video_test.is_valid).to(false)
-          get video_path(video_test)
-          expect(response).to have_http_status(:success)
-        end
-      end
-
-      context 'オーナー操作' do
-        before(:each) do
-          current_user(user_owner)
-        end
-
-        it '論理削除できる' do
-          expect {
-            patch videos_withdraw_path(video_test)
-          }.to change { Video.find(video_test.id).is_valid }.from(video_test.is_valid).to(false)
-        end
-
-        it '論理削除した後videos#showにアクセスできない' do
-          expect {
-            patch videos_withdraw_path(video_test)
-          }.to change { Video.find(video_test.id).is_valid }.from(video_test.is_valid).to(false)
-
-          get video_path(video_test)
-          expect(response).to have_http_status(:found)
-          expect(response).to redirect_to root_url
-        end
+  describe '#withdraw' do
+    shared_examples "can_logic_delete" do
+      it '論理削除できる' do
+        expect {
+          patch videos_withdraw_path(video_sample)
+        }.to change { video_sample.reload.is_valid }.from(true).to(false)
       end
     end
 
-    context '異常' do
-      context '動画投稿者' do
-        before(:each) do
-          current_user(user_staff)
-        end
+    shared_examples "can't_logic_delete" do
+      it '論理削除できない' do
+        expect {
+          patch videos_withdraw_path(video_sample)
+        }.not_to change { video_sample.reload.is_valid }.from(true)
+      end
+    end
 
-        it '論理削除できない' do
-          expect {
-            patch videos_withdraw_path(video_test)
-          }.not_to change { Video.find(video_test.id).is_valid }
-        end
+    context 'システム管理者がログインしている場合' do
+      before do
+        sign_in system_admin
       end
 
-      context '別組織のオーナー操作' do
-        before(:each) do
-          current_user(another_user_owner)
-        end
+      it_behaves_like "can_logic_delete"
 
-        it '論理削除できない' do
-          expect {
-            patch videos_withdraw_path(video_test)
-          }.not_to change { Video.find(video_test.id).is_valid }
-        end
+      it '論理削除した後もvideos#showにアクセスできる' do
+        expect {
+          patch videos_withdraw_path(video_sample)
+        }.to change { video_sample.reload.is_valid }.from(true).to(false)
+        get video_path(video_sample)
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context 'オーナーがログインしている場合' do
+      before do
+        sign_in user_owner
       end
 
-      context '視聴者操作' do
-        before(:each) do
-          current_viewer(viewer)
-        end
+      it_behaves_like "can_logic_delete"
 
-        it '論理削除できない' do
-          expect {
-            patch videos_withdraw_path(video_test)
-          }.not_to change { Video.find(video_test.id).is_valid }
-        end
+      it '論理削除した後videos#showにアクセスできない' do
+        expect {
+          patch videos_withdraw_path(video_sample)
+        }.to change { video_sample.reload.is_valid }.from(true).to(false)
+        get video_path(video_sample)
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to root_url
+      end
+    end
+
+    context '動画投稿者がログインしている場合' do
+      before do
+        sign_in user_staff
       end
 
-      context '非ログイン操作' do
-        it '論理削除できない' do
-          expect {
-            patch videos_withdraw_path(video_test)
-          }.not_to change { Video.find(video_test.id).is_valid }
-        end
+      it_behaves_like "can't_logic_delete"
+    end
+
+    context '別組織のオーナーがログインしている場合' do
+      before do
+        sign_in another_user_owner
       end
+
+      it_behaves_like "can't_logic_delete"
+    end
+
+    context '視聴者がログインしている場合' do
+      before do
+        sign_in viewer
+      end
+
+      it_behaves_like "can't_logic_delete"
+    end
+
+    context '非ログイン状態の場合' do
+      it_behaves_like "can't_logic_delete"
     end
   end
 end
