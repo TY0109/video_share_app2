@@ -23,9 +23,16 @@ services:
       - webpacker
     environment:
       WEBPACKER_DEV_SERVER_HOST: webpacker
+      SELENIUM_DRIVER_URL: http://selenium_chrome:4444/wd/hub 
+   
     # (stdin_open,tty) = コンテナ内でデバックできるようにする
     stdin_open: true
     tty: true
+
+    ### 追記 ###
+    networks:
+      ktg-net:
+
   webpacker:
     build:
       context: .
@@ -40,6 +47,10 @@ services:
       WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
     ports:
       - "3035:3035"
+    ### 追記 ###
+    networks:
+      ktg-net:
+
   db:
     image: mysql:8.0
     container_name: docker-db-service
@@ -50,7 +61,27 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     volumes:
       - mysql-data:/var/lib/mysql
+    platform: linux/x86_64
 
+    ### 追記 ###
+    networks:
+      ktg-net:
+    
+  ### 追記 ###
+  selenium_chrome:
+    # image: selenium/standalone-chrome-debug
+    # seleniumだとApple Siliconで動かないので、代わりにseleniarmを使う
+    image: seleniarm/standalone-chromium:4.17.0
+    ports:
+      - '4444:4444'
+    ### 追記 ###
+    networks:
+      ktg-net:
+
+### 追記 ###
+networks:
+  ktg-net:
+    
 volumes:
   mysql-data:
   bundle:
