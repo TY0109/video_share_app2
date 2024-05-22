@@ -51,4 +51,12 @@ class Organization < ApplicationRecord
   def payment_failed?
     plan.nil? || plan == -1
   end
+
+  def my_organization?(current_resource)
+    id == current_resource.organization_id
+  end 
+
+  def one_of_my_organization?(current_resource)
+    current_resource.organization_viewers.find_by(organization_id: id).present?
+  end 
 end

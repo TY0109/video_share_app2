@@ -31,7 +31,6 @@ ActiveRecord::Schema.define(version: 2024_05_22_090823) do
   create_table "folders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.bigint "organization_id", null: false
-    t.integer "video_folder_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["organization_id"], name: "index_folders_on_organization_id"
@@ -151,19 +150,6 @@ ActiveRecord::Schema.define(version: 2024_05_22_090823) do
     t.index ["video_id"], name: "index_video_folders_on_video_id"
   end
 
-  create_table "video_statuses", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.float "end_point"
-    t.float "total_time"
-    t.float "watched_ratio"
-    t.datetime "watched_at"
-    t.integer "video_id", null: false
-    t.integer "viewer_id", null: false
-    t.boolean "is_valid", default: true
-    t.index ["viewer_id", "video_id"], name: "index_video_statuses_on_viewer_id_and_video_id", unique: true
-  end
-
   create_table "videos", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.integer "audience_rate"
@@ -173,6 +159,7 @@ ActiveRecord::Schema.define(version: 2024_05_22_090823) do
     t.boolean "login_set", default: false
     t.boolean "popup_before_video", default: false
     t.boolean "popup_after_video", default: false
+    t.string "data_url", null: false
     t.boolean "is_valid", default: true, null: false
     t.bigint "organization_id", null: false
     t.bigint "user_id"

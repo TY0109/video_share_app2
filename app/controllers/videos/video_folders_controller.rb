@@ -1,8 +1,10 @@
 class Videos::VideoFoldersController < VideosController
   before_action :ensure_admin_or_owner_or_correct_user
-  before_action :ensure_my_organization
+  before_action :ensure_my_organization_video
+  skip_before_action :ensure_admin
 
   def destroy
+    # video_folder = Folder.find_by(folder_id: params[:folder_id], video_id: params[:video_id])で取得することもできるが、folderを変数化したいため、以下のように対応
     folder = Folder.find(params[:folder_id])
     video_folder = folder.video_folders.find_by(video_id: params[:video_id])
     video_folder.destroy
@@ -16,20 +18,9 @@ class Videos::VideoFoldersController < VideosController
   end
 
   def ensure_admin_or_owner_or_correct_user
-    # videosコントローラのメソッドと、メソッド名は同じ、処理内容はオーバーライド
-    video = set_video
-    unless current_system_admin.present? || video.user_id == current_user.id || current_user.role == 'owner'
+    # videosコントローラのメソッドとほぼ同じ処理(リダイレクト先のみ異なる)
+    unless current_system_admin? || set_video.my_upload?(current_user) || current_user&.owner?
       redirect_to organization_folders_url(params[:organization_id]), flash: { danger: '権限がありません。' }
-    end
-  end
-
-  def ensure_my_organization
-    # videosコントローラのメソッドと、メソッド名は同じ、処理内容はオーバーライド
-    if current_user.present?
-      video = set_video
-      unless current_user.organization_id == video.organization_id
-        redirect_to organization_folders_url(params[:organization_id]), flash: { danger: '権限がありません。' }
-      end
     end
   end
 end

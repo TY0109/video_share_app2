@@ -1,84 +1,66 @@
 class Video < ApplicationRecord
+  # vimeoへのアップロードの際に使用する一時的な属性(DBには保存しない)
+  attr_accessor :video_file
+
   belongs_to :organization
   belongs_to :user
 
-  has_one_attached :video
   has_many :comments, dependent: :destroy
 
   has_many :video_folders, dependent: :destroy
   has_many :folders, through: :video_folders
 
   validates :title, presence: true
-  validates :title, uniqueness: { scope: :organization }, if: :video_exists?
+  # 同一組織内で同じタイトルの動画は不可
+  validates :title, uniqueness: { scope: :organization }, if: :the_same_title_video_exists?
+  
+  validates :video_file, presence: true, on: :create
+  validate :video_file_format, on: :create
 
-  def video_exists?
-    video = Video.where(title: self.title, is_valid: true).where.not(id: self.id)
-    video.present?
+  before_create :upload_to_vimeo
+
+  def the_same_title_video_exists?
+    Video.where(title: title, is_valid: true).where.not(id: id)
   end
-
-  # 動画自体はアプリ内には保存されないので、動画なしを不可, 動画以外を不可とするバリデーションはここでは設定しない
-  # validates :video, presence: true, blob: { content_type: :video }
-
-  scope :user_has, ->(organization_id) { where(organization_id: organization_id) }
-  scope :current_user_has, ->(current_user) { where(organization_id: current_user.organization_id) }
-  scope :current_viewer_has, ->(organization_id) { where(organization_id: organization_id) }
-  scope :available, -> { where(is_valid: true) }
 
   def identify_organization_and_user(current_user)
     self.organization_id = current_user.organization.id
     self.user_id = current_user.id
   end
 
-  def user_no_available?(current_user)
-    self.organization_id != current_user.organization_id
-  end
+  def my_organization?(current_resource)
+    organization_id == current_resource.organization_id
+  end 
+
+  def one_of_my_organization?(current_resource)
+    current_resource.organization_viewers.find_by(organization_id: organization_id).present?
+  end 
 
   def my_upload?(current_user)
-    return true if self.user_id == current_user.id
-
-    false
+    user_id == current_user&.id
   end
-
-  def ensure_owner?(current_user)
-    return true if current_user.role == 'owner'
-
-    false
-  end
-
-  # 下記vimeoへのアップロード機能
-  attr_accessor :video
-
-  before_create :upload_to_vimeo
-
+  
+  # vimeoに投稿し、完了できていればtrueを返す。
+  # cf https://github.com/bo-oz/vimeo_me2
   def upload_to_vimeo
-    # connect to Vimeo as your own user, this requires upload scope
-    # in your OAuth2 token
     vimeo_client = VimeoMe2::User.new(ENV['VIMEO_API_TOKEN'])
-    # upload the video by passing the ActionDispatch::Http::UploadedFile
-    # to the upload_video() method. The data_url in this model, stores
-    # the location of the uploaded video on Vimeo.
-
-    # 動画が存在している、拡張子が動画のものであればvimeoにアップロードする。今のところ、許可しているものは左から順にwebm, mov, mp4, mpeg, wmv, avi
-    if self.video.present? && (self.video.content_type == 'video/webm' || self.video.content_type == 'video/quicktime' || self.video.content_type == 'video/mp4' || self.content_type == 'video/mpeg' || self.video.content_type == 'video/x-ms-wmv' || self.video.content_type == 'video/avi')
-      video = vimeo_client.upload_video(self.video)
-      self.data_url = video['uri']
-      true
-    end
-  # アプリ側ではなく、vimeo側に原因があるエラーのとき(容量不足など)
+    vimeo_video = vimeo_client.upload_video(video_file)
+    self.data_url = vimeo_video['uri']
+    true # true/falseを判定するメソッドではないが、戻り値を明示
   rescue VimeoMe2::RequestFailed => e
-    errors.add(:video, e.message)
-    false
+    # 認証エラーの場合 → ビデオSomething strange occurred. Please get in touch with the app's creator.
+    # 容量オーバーの場合 → ビデオYour account doesn't have enough free space to upload this video for the current time period. Go to vimeo.com/upgrade to get more.
+    errors.add(:video_file, e.message)
+    # ここでfalseを返してもsave処理を続行してしまうので、代わりにthrow(:abort)し処理を停止する
+    throw(:abort)
   end
 
-  validate :video_is_necessary
-
-  def video_is_necessary
-    # (acitvestorageで取り付けたvideoが存在しないまたはファイルの形式が不正) かつ、data_urlが存在しないならば、はじく。
-    # && data_url.nil?を記述しないと、動画情報を更新する際も、動画の投稿が必須となってしまう。
-    if (video.nil? || (video.content_type != 'video/webm' && video.content_type != 'video/quicktime' && video.content_type != 'video/mp4' && video.content_type != 'video/mpeg' && video.content_type != 'video/x-ms-wmv' && video.content_type != 'video/avi')) && data_url.nil?
-      errors.add(:video, 'をアップロードしてください')
-    end
+  def video_file_format
+    errors.add(:video_file, 'の拡張子が不正です') unless ['video/mp4', 'video/webm', 'video/quicktime', 'video/mpeg', 'video/x-ms-wmv', 'video/avi'].include?(video_file.content_type) if video_file
   end
+
+  scope :organization_specific_videos, ->(organization_id) { where(organization_id: organization_id) }
+  scope :available, -> { where(is_valid: true) }
 
   # ビデオ検索機能
   scope :search, lambda { |search_params|

@@ -5,8 +5,8 @@
     <div class="row">
       <div class="col-md-7">
         <div class="field">
-          <%= f.label :video %><br>
-          <%= f.file_field :video, accept: "video/*", id:"post" %> 
+          <%= f.label :video_file %><br>
+          <%= f.file_field :video_file, accept: "video/*", id:"post" %> 
         </div>
         <!--このclassのエリアを、file_fieldの上に被せる-->
         <div class="choice_box">ドラック＆ドロップまたはクリック</div><br>
@@ -24,23 +24,23 @@
         </div>
         <div class="field">
           <%= f.label :range, class: "video-label" %><br>
-          <%= f.select :range, [['一般公開',0],['限定公開',1]], { include_blank: false, selected: 0 }, id:"range" %>
+          <%= f.select :range, [['一般公開', 0],['限定公開', 1]], { include_blank: false, selected: 0 }, id:"range" %>
         </div> 
         <div class="field">
           <%= f.label :comment_public, class: "video-label" %><br>
-          <%= f.select :comment_public, [['公開',0],['非公開',1]], { include_blank: false, selected: 0 }, id:"comment_public" %>
+          <%= f.select :comment_public, [['公開', 0],['非公開', 1]], { include_blank: false, selected: 0 }, id:"comment_public" %>
         </div>
         <div class="field">
           <%= f.label :login_set, class: "video-label" %><br>
-          <%= f.select :login_set, [['ログイン不要',0],['ログイン必要',1]], { include_blank: false, selected: 0 }, id:"login_set" %>
+          <%= f.select :login_set, [['ログイン不要', 0],['ログイン必要', 1]], { include_blank: false, selected: 0 }, id:"login_set" %>
         </div>
         <div class="field">
           <%= f.label :popup_before_video, class: "video-label" %><br>
-          <%= f.select :popup_before_video, [['動画視聴開始時ポップアップ非表示',0],['動画視聴開始時ポップアップ表示',1]], { include_blank: false, selected: 0 }, id:"popup_before_video" %>
+          <%= f.select :popup_before_video, [['動画視聴開始時ポップアップ表示', 0],['動画視聴開始時ポップアップ非表示', 1]], { include_blank: false, selected: 0 }, id:"popup_before_video" %>
         </div>
         <div class="field">
           <%= f.label :popup_after_video, class: "video-label" %><br>
-          <%= f.select :popup_after_video, [['動画視聴終了時ポップアップ非表示',0],['動画視聴終了時ポップアップ表示',1]], { include_blank: false, selected: 0 }, id:"popup_after_video" %>
+          <%= f.select :popup_after_video, [['動画視聴終了時ポップアップ表示', 0],['動画視聴終了時ポップアップ非表示', 1]], { include_blank: false, selected: 0 }, id:"popup_after_video" %>
         </div>
         <div class="field">
           <%= f.label :folders, class: "video-label" %><br>
