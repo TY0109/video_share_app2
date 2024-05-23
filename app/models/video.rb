@@ -1,4 +1,6 @@
 class Video < ApplicationRecord
+  require_relative '../../lib/api/vimeo_client'
+  
   # vimeoへのアップロードの際に使用する一時的な属性(DBには保存しない)
   attr_accessor :video_file
 
@@ -43,9 +45,8 @@ class Video < ApplicationRecord
   # vimeoに投稿し、完了できていればtrueを返す。
   # cf https://github.com/bo-oz/vimeo_me2
   def upload_to_vimeo
-    vimeo_client = VimeoMe2::User.new(ENV['VIMEO_API_TOKEN'])
-    vimeo_video = vimeo_client.upload_video(video_file)
-    self.data_url = vimeo_video['uri']
+    vimeo_client = VimeoClient.new
+    self.data_url = vimeo_client.upload(video_file)
     true # true/falseを判定するメソッドではないが、戻り値を明示
   rescue VimeoMe2::RequestFailed => e
     # 認証エラーの場合 → ビデオSomething strange occurred. Please get in touch with the app's creator.
