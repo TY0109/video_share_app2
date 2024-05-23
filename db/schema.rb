@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_22_152345) do
+ActiveRecord::Schema.define(version: 2024_05_22_155203) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -176,6 +176,18 @@ ActiveRecord::Schema.define(version: 2024_05_22_152345) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["folder_id"], name: "index_video_folders_on_folder_id"
     t.index ["video_id"], name: "index_video_folders_on_video_id"
+  end
+
+  create_table "video_statuses", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.float "end_point"
+    t.float "total_time"
+    t.float "watched_ratio"
+    t.datetime "watched_at"
+    t.integer "video_id", null: false
+    t.integer "viewer_id", null: false
+    t.index ["viewer_id", "video_id"], name: "index_video_statuses_on_viewer_id_and_video_id", unique: true
   end
 
   create_table "videos", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

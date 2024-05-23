@@ -7,15 +7,16 @@ class Video < ApplicationRecord
   has_many :video_folders, dependent: :destroy
   has_many :folders, through: :video_folders
 
-  has_one_attached :video
+  has_many :video_statuses, dependent: :destroy
+  has_many :viewers, through: :video_statuses
+
+  has_one_attached :video_file
 
   validates :title, presence: true
   # 同一組織内で同じタイトルの動画は不可
   validates :title, uniqueness: { scope: :organization }, if: :the_same_title_video_exists?
   
-  validates :video, presence: true, blob: { content_type: :video }
-
-  before_create :upload_to_vimeo
+  validates :video_file, presence: true, blob: { content_type: :video }
 
   def the_same_title_video_exists?
     Video.where(title: title, is_valid: true).where.not(id: id)
@@ -36,6 +37,10 @@ class Video < ApplicationRecord
 
   def my_upload?(current_user)
     user_id == current_user&.id
+  end
+
+  def valid_true?
+    return if is_valid
   end
 
   scope :organization_specific_videos, ->(organization_id) { where(organization_id: organization_id) }

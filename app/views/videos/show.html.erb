@@ -9,18 +9,19 @@
 
 <div class="content">
   <div class="video-display-show">
-    <video width="300" height="200" id="mv" controls>
-      <source src="<%= url_for(@video.video) %>">
-    </video>
+    <video width="1000" height="500" id="mv" controls playsinline>
+      <source src="<%= url_for(@video.video_file) %>#t=<%= @video_status.end_point if @video_status.present? %>"> <!-- 再生完了時点からの再生が可能 -->
+    </video><br> 
   </div>
   <div class="video-title-and-action-show">
     <%= @video.title %><br>
     <%= link_to "設定", edit_video_path(@video), remote: true, class: "btn btn-success" if user_signed_in? || system_admin_signed_in? %>
-    <% if @video.is_valid %>
-      <%= link_to "削除", videos_hidden_path(@video), class: "btn btn-danger" if system_admin_signed_in? || current_user&.owner? %>
-    <% else %>
-      <p>オーナー削除済み</p>
-    <% end %>
+    <%
+=begin%>
+ <%= @video.hidden_button %> 
+<%
+=end%>
+    <%= link_to "視聴状況の確認", video_statuses_path, local: true, class: "text-white btn btn-warning" if user_signed_in? || system_admin_signed_in? %>
   </div>
 </div>
 
@@ -45,6 +46,21 @@
   </div>
 </div>
 <!-- 動画コメント ------------------------------------------------------------------------>
+
+<!--以下、視聴率の計算に必要なデータを表示 -->
+<!-- TODO: cssのdisplay:noneで隠す -->
+<div class="video-statuses mt-3">
+  <% if current_viewer %>
+    <p class="viewer-id" id = "<%= current_viewer.id %>"><%= current_viewer.id %></p>
+    <p class="video-id" id = "<%= @video.id %>"><%= @video.id %></p>
+    <p class="video-status-id" id = "<%= @video_status&.id %>"><%= @video_status&.id %>
+
+    <p>動画の総再生時間: <span id="total"></span></p>
+    <P>再生開始地点の記録: <span id="latest_start_point"></span></p>  
+    <P>再生終了地点の記録: <span id="latest_end_point"></span></p>
+  <% end %>
+</div>
+<!-- ここまで -->
 
 <div id="edit" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="popup_before" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

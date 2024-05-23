@@ -109,4 +109,17 @@ Rails.application.routes.draw do
 
   # 決済機能webhook関連
   post 'webhooks' => 'webhooks#create'
+
+  scope module: :viewers do
+    get 'videos/:video_id/video_statuses/:id/hidden' => 'hiddens#confirm', as: :video_status_hidden
+    patch 'videos/:video_id/video_statuses/:id/withdraw' => 'hiddens#withdraw', as: :video_status_withdraw
+  end
+
+  resources :videos do
+    member do
+      scope module: :viewers do
+        resources :video_statuses, only: %i[index update destroy]
+      end
+    end
+  end
 end

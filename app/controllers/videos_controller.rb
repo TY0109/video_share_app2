@@ -32,9 +32,6 @@ class VideosController < ApplicationController
   def create
     @video = Video.new(video_params)
     @video.identify_organization_and_user(current_user)
-    # saveが呼ばれた後のフローは以下
-    # ①バリデーションチェックが問題なければ、before_createでvimeoに動画投稿 
-    # → ③vimeoへの投稿に成功すれば、videoオブジェクトがcreateされる。/ vimeoへの投稿に失敗すれば、処理を中断
     if @video.save
       flash[:success] = '動画を投稿しました。'
       redirect_to @video
@@ -52,6 +49,8 @@ class VideosController < ApplicationController
     @comment = Comment.new
     # partial: 'comments/index' の中でrenderしている partial: 'replies/form' 内で使用
     @reply = Reply.new
+    # current_viewerの視聴状況が未作成の場合、視聴率が0.0%のvideo_statusオブジェクトを生成
+    set_current_viewer_video_status
   end
 
   def edit
@@ -146,6 +145,17 @@ class VideosController < ApplicationController
     if current_system_admin.nil? && !set_video.is_valid?
       flash[:danger] = 'すでに削除された動画です。'
       redirect_back(fallback_location: root_url)
+    end
+  end
+
+  def set_current_viewer_video_status
+    video = set_video
+    if current_viewer
+      @video_status = current_viewer.video_status_of_the_set_video(video.id)
+      unless @video_status.present?
+        current_viewer.video_statuses.create!(video_id: video.id, watched_ratio: 0.0)
+      end
+      @video_status = current_viewer.video_status_of_the_set_video(video.id)
     end
   end
 end

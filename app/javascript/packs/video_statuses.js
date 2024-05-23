@@ -11,12 +11,8 @@ require('admin-lte');
 require("jquery");
 
 import 'bootstrap';
-import '../stylesheets/videos';
+import '../stylesheets/video_statuses';
 import "@fortawesome/fontawesome-free/js/all";
 
 // 追記
-import "./videos/new";
-import "./videos/show";
-import "./video_comment";
-import "./video_search_reset";
-import "./video_popup"
+import "./video_status"

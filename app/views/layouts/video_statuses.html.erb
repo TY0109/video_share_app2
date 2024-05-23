@@ -3,15 +3,15 @@
   <head>
     <title>App</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <script src="https://player.vimeo.com/api/player.js"></script>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_pack_tag 'videos', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'videos', 'data-turbolinks-track': 'reload' %>
-    <!-- 動画の視聴状況を取得するためMediaElement.jsを読み込み -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/4.2.9/mediaelement-and-player.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/4.2.9/mediaelementplayer.css">
-    <!-- ここまで -->
+    <%= stylesheet_pack_tag 'video_statuses', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'video_statuses', 'data-turbolinks-track': 'reload' %>
+    <!--視聴状況のグラフ表示のために追加 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+       var names = <%== @side %>, ratios = <%= @vertical %>
+    </script>
   </head>
   <body class="hold-transition sidebar-mini" id="<%= page_body_id(params) %>">
     <div class="wrapper">
@@ -24,7 +24,7 @@
       <%end%> 
 
       <!-- Content side_bar(model) -->
-      
+
       <% if current_system_admin.present? %>
         <%= render "layouts/system_admins/side" %> 
       <% elsif current_user.present? %>
@@ -35,9 +35,7 @@
 
       <!-- /Content side_bar(model) -->
       <div class="content-wrapper">
-        <div id="flash-message">
-          <%= render "layouts/flash" %>
-        </div>
+        <%= render "layouts/flash" %>
         <!-- Content Header (Page header) -->
 	      <div class="content-header">
           <div class="container-fluid">
