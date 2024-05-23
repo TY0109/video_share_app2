@@ -1,6 +1,4 @@
 class Video < ApplicationRecord
-  require_relative '../../lib/api/vimeo_client'
-  
   # vimeoへのアップロードの際に使用する一時的な属性(DBには保存しない)
   attr_accessor :video_file
 
@@ -18,8 +16,8 @@ class Video < ApplicationRecord
   
   validates :video_file, presence: true, on: :create
   validate :video_file_format, on: :create
-
-  before_create :upload_to_vimeo
+  
+  after_commit :upload_to_vimeo
 
   def the_same_title_video_exists?
     Video.where(title: title, is_valid: true).where.not(id: id)
@@ -42,20 +40,11 @@ class Video < ApplicationRecord
     user_id == current_user&.id
   end
   
-  # vimeoに投稿し、完了できていればtrueを返す。
-  # cf https://github.com/bo-oz/vimeo_me2
   def upload_to_vimeo
-    vimeo_client = VimeoClient.new
-    self.data_url = vimeo_client.upload(video_file)
-    true # true/falseを判定するメソッドではないが、戻り値を明示
-  rescue VimeoMe2::RequestFailed => e
-    # 認証エラーの場合 → ビデオSomething strange occurred. Please get in touch with the app's creator.
-    # 容量オーバーの場合 → ビデオYour account doesn't have enough free space to upload this video for the current time period. Go to vimeo.com/upgrade to get more.
-    errors.add(:video_file, e.message)
-    # ここでfalseを返してもsave処理を続行してしまうので、代わりにthrow(:abort)し処理を停止する
-    throw(:abort)
+    # TODO: 即時実行になっているのでperform_laterにしたいが、その場合、ActiveStorageを使わないと、ActionDispatch::Http::UploadedFileを処理できない
+    UploadToVimeoJob.perform_now(self)
   end
-
+  
   def video_file_format
     errors.add(:video_file, 'の拡張子が不正です') unless ['video/mp4', 'video/webm', 'video/quicktime', 'video/mpeg', 'video/x-ms-wmv', 'video/avi'].include?(video_file.content_type) if video_file
   end
